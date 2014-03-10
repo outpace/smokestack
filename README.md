@@ -4,7 +4,11 @@ Where there's smoke, there's fire!
 
 ## Usage
 
-FIXME
+Add smokestack as a dependency and use smokestack.middleware.wrap-smokestack when defining your handler
+
+`lein ring server` to run the example
+
+`lein ring test` to run the tests
 
 ## License
 
