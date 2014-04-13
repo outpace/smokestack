@@ -1,39 +1,41 @@
 (ns smokestack.core
-  (:require [clojure.java.io :refer [as-file reader]]))
+  (:require [clojure.java.io :as io]
+            [me.raynes.fs :as fs]
+            [clojure.java.classpath :as cp]))
 
 (def context-size 15)
 
-;; TODO: want the relative classpath for display, as well as the filename for read
 (defn locations
-  "Returns [[file line]*]"
+  "Returns [[label error-line ns-str]*]"
   [e]
-  (for [element (.getStackTrace e)
-        :let [file (as-file  (.getFileName element))
-              line (.getLineNumber element)
-              ns-str (let [class-name (.getClassName element)
-                           i (.indexOf class-name "$")]
-                       (when (pos? i)
-                         (subs class-name 0 i)))]
-        :when (and ns-str file (.exists file))]
-    [file line]))
+  (for [element (.getStackTrace e)]
+    [(.toString element)
+     (.getLineNumber element)
+     (second (re-find #"([^$]*)[$]" (.getClassName element)))]))
 
 (defn slice-source-code
-  "Returns [[line-num [line*]]*]"
+  "Returns [[line-num code]*]"
   [file line-num]
   (let [from-line (- line-num context-size)
         n (inc  (* 2 context-size))]
-    (with-open [rdr (reader file)]
+    (with-open [rdr (io/reader file)]
       (doall (map vector
                   (map inc (range (max 0 from-line) (+ from-line n 1)))
                   (take n (drop from-line (line-seq rdr))))))))
 
+(defn find-source [ns-str]
+  (first (for [dir (cp/classpath-directories)
+               :let [file (fs/with-cwd dir (fs/ns-path ns-str))]
+               :when (fs/readable? file)]
+           file)))
+
 (defn exception-stack
   "Returns a sequence of code blocks per frame of an exception stacktrace
-  [[file error-line [[line-number code]*]]*]"
+  [[file error-line [[line-num code]*]]*]"
   [e]
-  (remove nil?
-          (for [[file line] (locations e)]
-            [file line (slice-source-code file line)])))
+  (for [[label error-line ns-str] (locations e)
+        :let [file (when ns-str (find-source ns-str))]]
+    [label error-line (when file (slice-source-code file error-line))]))
 
 (defn exception-messages
   "Given an exception, returns [[message data]*]"

@@ -8,11 +8,11 @@ Add smokestack as a dependency and use smokestack.middleware.wrap-smokestack whe
 
 `lein ring server` to run the example
 
-`lein ring test` to run the tests
+`lein test` to run the tests
 
 ## License
 
-Copyright © 2014 FIXME
+Copyright © 2014 Outpace Systems Inc
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.

@@ -3,10 +3,11 @@
   :url "https://github.com/outpace/smokestack"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[hiccup "1.0.5"]
-                 [garden "1.1.5"]
-                 [org.clojure/clojure "1.5.1"]
-                 ;TODO: this is only for the example, would like to put it in a profile
-                 [compojure "1.1.6"]]
+  :dependencies [[org.clojure/clojure "1.5.1"]
+                 [org.clojure/java.classpath "0.2.2"]
+                 [me.raynes/fs "1.4.5"]
+                 [hiccup "1.0.5"]
+                 [garden "1.1.5"]]
+  :profiles {:dev {:dependencies [[compojure "1.1.6"]]}}
   :plugins [[lein-ring "0.8.10"]]
   :ring {:handler smokestack.example/handler})
