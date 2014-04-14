@@ -1,12 +1,12 @@
 (ns smokestack.middleware
-  (:require [smokestack.render :refer [text-print-exception html-print-exception]]))
+  (:require [smokestack.render :as render]))
 
 ;; TODO: just set Content-Type to be accept? and use (def renderers {})
-(defn text-response [details]
-  {:body (text-print-exception details)
+(defn text-response [e]
+  {:body (render/text-exception e)
    :headers {"Content-Type" "text/text"}})
-(defn html-response [details]
-  {:body (html-print-exception details)
+(defn html-response [e]
+  {:body (render/html-exception-page e)
    :headers {"Content-Type" "text/html"}})
 
 (defn wrap-smokestack

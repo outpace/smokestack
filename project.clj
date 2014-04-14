@@ -1,4 +1,4 @@
-(defproject smokestack "0.1.0-SNAPSHOT"
+(defproject smokestack "0.1.0"
   :description "Where there's smoke, there's fire. Contextual exception reporting middleware."
   :url "https://github.com/outpace/smokestack"
   :license {:name "Eclipse Public License"

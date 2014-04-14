@@ -1,6 +1,7 @@
 (ns smokestack.render
-  (:require [smokestack.core :refer [exception-messages exception-stack]]
+  (:require [smokestack.core :refer [exception-chain exception-stack]]
             [clojure.string :as string]
+            [clojure.pprint :as pprint]
             [hiccup.core :refer [html]]
             [garden.core :refer [css]]))
 
@@ -60,20 +61,31 @@
          [:code code]])]]
     [:div label]))
 
-(defn html-print-exception
-  "Renders the exception in HTML"
+(defn html-one-exception
+  "A single exception as a div"
+  [e]
+  [:div
+   [:div.message
+    [:h1 (.getMessage e)]
+    (when-let [data (ex-data e)]
+      [:code (with-out-str (pprint/pprint data))])
+   [:div
+    (map html-code (exception-stack e))]]])
+
+(defn html-exception
+  "An exception and all its causes as html"
+  [e]
+  [:div
+   (interpose [:h2 "Caused by:"]
+              (for [ex (exception-chain e)]
+                (html-one-exception ex)))])
+
+(defn html-exception-page
+  "Renders the exception as a html page"
   [e]
   (html
-   [:head
-    [:style style]
-    [:title "Error"]]
-   [:body
-    [:div
-     (for [[a b] (exception-messages e)]
-       [:div.message
-        [:h1 a [:h3 b]]])]
-    [:div
-     (map html-code (exception-stack e))]]))
+   [:head [:style style] [:title "Error"]]
+   [:body (html-exception e)]))
 
 
 (defn text-code
@@ -89,10 +101,20 @@
                                line-number
                                code)))))
 
-(defn text-print-exception
-  "Renders the exception as text"
+(defn text-one-exception
+  "Renders a single exception as text"
   [e]
   (string/join \newline
                (concat
-                (map #(apply str %) (exception-messages e))
+                (if-let [data (ex-data e)]
+                  [(.getMessage e) (with-out-str (pprint/pprint data))]
+                  [(.getMessage e)])
                 (map text-code (exception-stack e)))))
+
+(defn text-exception
+  "Renders the exception and all its causes as text"
+  [e]
+  (string/join \newline
+               (interpose (str \newline  "== Caused By ==")
+                          (for [ex (exception-chain e)]
+                            (text-one-exception ex)))))

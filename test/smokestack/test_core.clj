@@ -7,7 +7,6 @@
 (deftest core-tests
   (is (seq (locations e)))
   (is (seq (slice-source-code "src/smokestack/core.clj" 10)))
-  (is (seq (exception-messages e)))
-  (is (seq (exception-stack e))))
-
-(run-tests)
+  (is (find-source "smokestack.test-core"))
+  (is (seq (exception-stack e)))
+  (is (seq (exception-chain e))))

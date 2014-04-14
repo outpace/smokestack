@@ -9,7 +9,7 @@
   "Returns [[label error-line ns-str]*]"
   [e]
   (for [element (.getStackTrace e)]
-    [(.toString element)
+    [element
      (.getLineNumber element)
      (second (re-find #"([^$]*)[$]" (.getClassName element)))]))
 
@@ -31,17 +31,18 @@
 
 (defn exception-stack
   "Returns a sequence of code blocks per frame of an exception stacktrace
-  [[file error-line [[line-num code]*]]*]"
+  [[label error-line [[line-num code]*]]*]"
   [e]
   (for [[label error-line ns-str] (locations e)
         :let [file (when ns-str (find-source ns-str))]]
-    [label error-line (when file (slice-source-code file error-line))]))
+    [(if file
+       ns-str
+       label)
+     error-line
+     (when file (slice-source-code file error-line))]))
 
-(defn exception-messages
-  "Given an exception, returns [[message data]*]"
+(defn exception-chain
+  "Given an exception, returns [[e stack]*] for all causes"
   [e]
-  (for [x [e (.getCause e)]
-        :when x]
-    (if (instance? clojure.lang.ExceptionInfo x)
-      [(.getMessage x) (.getData x)]
-      [x])))
+  (cons e (when-let [cause (.getCause e)]
+            (exception-chain cause))))
