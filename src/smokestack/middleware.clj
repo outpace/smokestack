@@ -1,7 +1,7 @@
 (ns smokestack.middleware
   (:require [smokestack.render :as render]))
 
-;; TODO: just set Content-Type to be accept? and use (def renderers {})
+;; TODO: just set Content-Type to be accept? and use a multimethod
 (defn text-response [e]
   {:body (render/text-exception e)
    :headers {"Content-Type" "text/text"}})

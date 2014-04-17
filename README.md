@@ -4,7 +4,12 @@ Where there's smoke, there's fire!
 
 ## Usage
 
-Add smokestack as a dependency and use smokestack.middleware.wrap-smokestack when defining your handler
+Add [smokestack](https://clojars.org/smokestack) to your project.clj as a dependency and use smokestack.middleware.wrap-smokestack when defining your handler.
+
+![latest-version](https://clojars.org/smokestack/latest-version.svg)
+
+[example](https://github.com/outpace/smokestack/blob/master/src/smokestack/example.clj)
+
 
 `lein ring server` to run the example
 
