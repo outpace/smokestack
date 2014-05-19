@@ -21,5 +21,4 @@
                (let [accept (get-in request [:headers "accept"])]
                  (if (and accept (re-find #"^text/html" accept))
                    (html-response e)
-                   (text-response e))))
-        (throw e)))))
+                   (text-response e))))))))
