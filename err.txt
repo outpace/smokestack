@@ -1,0 +1,67 @@
+java.lang.String cannot be cast to java.lang.Number
+clojure.lang.Numbers.add(Numbers.java:126)
+clojure.lang.Numbers.add(Numbers.java:3523)
+smokestack.test_render
+    1: (ns smokestack.test-render
+    2:   (:require [clojure.test :refer :all]
+    3:             [smokestack.core :refer :all]
+    4:             [smokestack.render :refer :all]))
+    5: 
+    6: (def e (try
+*   7:          (+ 1 "1")
+    8:          (catch Exception e
+    9:            e)))
+   10: 
+   11: (def ei (try
+   12:           (throw (ex-info "Oh no" {:it-is "broken" :range (range 10)} e))
+   13:           (catch Exception e
+   14:             e)))
+   15: 
+   16: (def code [[1 "line a"]
+   17:            [2 "line b"]])
+   18: 
+   19: (deftest render-tests
+   20:   (is (text-code ["source.clj" 1 code]))
+   21:   (is (html-code ["source.clj" 1 code]))
+   22:   (is (html-one-exception e))
+   23:   (is (text-one-exception e))
+   24:   (is (html-exception e))
+clojure.lang.AFn.applyToHelper(AFn.java:159)
+clojure.lang.AFn.applyTo(AFn.java:151)
+clojure.lang.Compiler$InvokeExpr.eval(Compiler.java:3458)
+clojure.lang.Compiler$DefExpr.eval(Compiler.java:408)
+clojure.lang.Compiler.eval(Compiler.java:6624)
+clojure.lang.Compiler.load(Compiler.java:7064)
+clojure.lang.RT.loadResourceScript(RT.java:370)
+clojure.lang.RT.loadResourceScript(RT.java:361)
+clojure.lang.RT.load(RT.java:440)
+clojure.lang.RT.load(RT.java:411)
+clojure.core$load$fn__5018.invoke(core.clj:5530)
+clojure.core$load.doInvoke(core.clj:5529)
+clojure.lang.RestFn.invoke(RestFn.java:408)
+clojure.core$load_one.invoke(core.clj:5336)
+clojure.core$load_lib$fn__4967.invoke(core.clj:5375)
+clojure.core$load_lib.doInvoke(core.clj:5374)
+clojure.lang.RestFn.applyTo(RestFn.java:142)
+clojure.core$apply.invoke(core.clj:619)
+clojure.core$load_libs.doInvoke(core.clj:5413)
+clojure.lang.RestFn.applyTo(RestFn.java:137)
+clojure.core$apply.invoke(core.clj:619)
+clojure.core$require.doInvoke(core.clj:5496)
+clojure.lang.RestFn.applyTo(RestFn.java:137)
+clojure.core$apply.invoke(core.clj:619)
+user$eval85.invoke(form-init7912501324588696366.clj:1)
+clojure.lang.Compiler.eval(Compiler.java:6619)
+clojure.lang.Compiler.eval(Compiler.java:6609)
+clojure.lang.Compiler.load(Compiler.java:7064)
+clojure.lang.Compiler.loadFile(Compiler.java:7020)
+clojure.main$load_script.invoke(main.clj:294)
+clojure.main$init_opt.invoke(main.clj:299)
+clojure.main$initialize.invoke(main.clj:327)
+clojure.main$null_opt.invoke(main.clj:362)
+clojure.main$main.doInvoke(main.clj:440)
+clojure.lang.RestFn.invoke(RestFn.java:421)
+clojure.lang.Var.invoke(Var.java:419)
+clojure.lang.AFn.applyToHelper(AFn.java:163)
+clojure.lang.Var.applyTo(Var.java:532)
+clojure.main.main(main.java:37)
